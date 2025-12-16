@@ -1,0 +1,27 @@
+package com.mendel.transactions.controller;
+
+import com.mendel.transactions.dto.TransactionRequest;
+import com.mendel.transactions.dto.TransactionResponse;
+import com.mendel.transactions.service.TransactionService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/transactions")
+public class TransactionController {
+
+    private final TransactionService service;
+
+    public TransactionController(TransactionService service) {
+        this.service = service;
+    }
+
+    @PutMapping("/{transaction_id}")
+    public ResponseEntity<TransactionResponse> putTransaction(
+            @PathVariable("transaction_id") long txId,
+            @RequestBody TransactionRequest req) {
+
+        service.saveTransaction(txId, req.getAmount(), req.getType(), req.getParentId());
+        return ResponseEntity.ok(new TransactionResponse("ok"));
+    }
+}
