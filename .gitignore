@@ -1,0 +1,33 @@
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project specific
+tmp/
+.claude/
+.cursor/
+CLAUDE.md
+
+# Environment
+.env
+*.env.local
+
+# Logs
+*.log
+logs/
+
+# Test outputs
+test-results/
