@@ -4,6 +4,8 @@ import com.mendel.transactions.model.Transaction;
 import com.mendel.transactions.repository.TransactionRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class TransactionService {
 
@@ -16,5 +18,9 @@ public class TransactionService {
     public void saveTransaction(long id, double amount, String type, Long parentId) {
         Transaction tx = new Transaction(id, amount, type, parentId);
         repository.save(tx);
+    }
+
+    public List<Long> getTransactionsByType(String type) {
+        return repository.findByType(type);
     }
 }
