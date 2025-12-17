@@ -4,7 +4,7 @@ import com.mendel.transactions.model.Transaction;
 import com.mendel.transactions.repository.TransactionRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.*;
 
 @Service
 public class TransactionService {
@@ -22,5 +22,27 @@ public class TransactionService {
 
     public List<Long> getTransactionsByType(String type) {
         return repository.findByType(type);
+    }
+
+    public double calculateTransitiveSum(long transactionId) {
+        if (repository.findById(transactionId).isEmpty()) {
+            return 0.0;
+        }
+
+        double sum = 0.0;
+        Queue<Long> queue = new LinkedList<>();
+        queue.add(transactionId);
+
+        while (!queue.isEmpty()) {
+            Long id = queue.poll();
+            Optional<Transaction> tx = repository.findById(id);
+
+            if (tx.isPresent()) {
+                sum += tx.get().getAmount();
+                queue.addAll(repository.findChildrenByParentId(id));
+            }
+        }
+
+        return sum;
     }
 }
