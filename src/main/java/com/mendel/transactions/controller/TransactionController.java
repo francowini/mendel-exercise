@@ -1,5 +1,6 @@
 package com.mendel.transactions.controller;
 
+import com.mendel.transactions.dto.SumResponse;
 import com.mendel.transactions.dto.TransactionRequest;
 import com.mendel.transactions.dto.TransactionResponse;
 import com.mendel.transactions.service.TransactionService;
@@ -31,5 +32,11 @@ public class TransactionController {
     public ResponseEntity<List<Long>> getByType(@PathVariable String type) {
         List<Long> ids = service.getTransactionsByType(type);
         return ResponseEntity.ok(ids);
+    }
+
+    @GetMapping("/sum/{transaction_id}")
+    public ResponseEntity<SumResponse> getTransitiveSum(@PathVariable("transaction_id") long txId) {
+        double sum = service.calculateTransitiveSum(txId);
+        return ResponseEntity.ok(new SumResponse(sum));
     }
 }
