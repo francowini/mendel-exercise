@@ -1,23 +1,27 @@
 package com.mendel.transactions.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public class TransactionRequest {
 
-    private double amount;
+    @NotNull(message = "amount is required")
+    private Double amount;
+
+    @NotBlank(message = "type is required")
     private String type;
 
     @JsonProperty("parent_id")
     private Long parentId;
 
-    // for Jackson
     public TransactionRequest() {}
 
     public double getAmount() {
         return amount;
     }
 
-    public void setAmount(double amount) {
+    public void setAmount(Double amount) {
         this.amount = amount;
     }
 

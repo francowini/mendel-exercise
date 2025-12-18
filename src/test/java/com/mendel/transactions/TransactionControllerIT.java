@@ -235,4 +235,68 @@ class TransactionControllerIT {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.sum").value(0.0));
     }
+
+    // Validation tests
+
+    @Test
+    void putRejectsNullAmount() throws Exception {
+        String json = """
+                {
+                    "type": "cars"
+                }
+                """;
+
+        mvc.perform(put("/transactions/100")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error").value("amount is required"));
+    }
+
+    @Test
+    void putRejectsNullType() throws Exception {
+        String json = """
+                {
+                    "amount": 1000
+                }
+                """;
+
+        mvc.perform(put("/transactions/100")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error").value("type is required"));
+    }
+
+    @Test
+    void putRejectsEmptyType() throws Exception {
+        String json = """
+                {
+                    "amount": 1000,
+                    "type": ""
+                }
+                """;
+
+        mvc.perform(put("/transactions/100")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error").value("type is required"));
+    }
+
+    @Test
+    void putRejectsBlankType() throws Exception {
+        String json = """
+                {
+                    "amount": 1000,
+                    "type": "   "
+                }
+                """;
+
+        mvc.perform(put("/transactions/100")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error").value("type is required"));
+    }
 }
