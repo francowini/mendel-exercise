@@ -31,12 +31,18 @@ public class TransactionService {
 
         double sum = 0.0;
         Queue<Long> queue = new LinkedList<>();
+        Set<Long> visited = new HashSet<>();
         queue.add(transactionId);
 
         while (!queue.isEmpty()) {
             Long id = queue.poll();
-            Optional<Transaction> tx = repository.findById(id);
 
+            if (visited.contains(id)) {
+                continue;
+            }
+            visited.add(id);
+
+            Optional<Transaction> tx = repository.findById(id);
             if (tx.isPresent()) {
                 sum += tx.get().getAmount();
                 queue.addAll(repository.findChildrenByParentId(id));
