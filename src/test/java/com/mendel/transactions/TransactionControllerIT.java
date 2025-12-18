@@ -187,4 +187,52 @@ class TransactionControllerIT {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.sum").value(150.75));
     }
+
+    @Test
+    void sumHandlesSelfReference() throws Exception {
+        mvc.perform(put("/transactions/100")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"amount\": 500, \"type\": \"self\", \"parent_id\": 100}"));
+
+        mvc.perform(get("/transactions/sum/100"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.sum").value(500.0));
+    }
+
+    @Test
+    void sumHandlesOrphanedParent() throws Exception {
+        mvc.perform(put("/transactions/200")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"amount\": 750, \"type\": \"orphan\", \"parent_id\": 9999}"));
+
+        mvc.perform(get("/transactions/sum/200"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.sum").value(750.0));
+    }
+
+    @Test
+    void sumHandlesNegativeAmount() throws Exception {
+        mvc.perform(put("/transactions/300")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"amount\": 1000, \"type\": \"neg\"}"));
+
+        mvc.perform(put("/transactions/301")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"amount\": -200, \"type\": \"neg\", \"parent_id\": 300}"));
+
+        mvc.perform(get("/transactions/sum/300"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.sum").value(800.0));
+    }
+
+    @Test
+    void sumHandlesZeroAmount() throws Exception {
+        mvc.perform(put("/transactions/400")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"amount\": 0, \"type\": \"zero\"}"));
+
+        mvc.perform(get("/transactions/sum/400"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.sum").value(0.0));
+    }
 }
