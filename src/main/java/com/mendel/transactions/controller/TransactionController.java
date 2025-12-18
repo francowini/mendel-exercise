@@ -4,6 +4,7 @@ import com.mendel.transactions.dto.SumResponse;
 import com.mendel.transactions.dto.TransactionRequest;
 import com.mendel.transactions.dto.TransactionResponse;
 import com.mendel.transactions.service.TransactionService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +23,7 @@ public class TransactionController {
     @PutMapping("/{transaction_id}")
     public ResponseEntity<TransactionResponse> putTransaction(
             @PathVariable("transaction_id") long txId,
-            @RequestBody TransactionRequest req) {
+            @Valid @RequestBody TransactionRequest req) {
 
         service.saveTransaction(txId, req.getAmount(), req.getType(), req.getParentId());
         return ResponseEntity.ok(new TransactionResponse("ok"));

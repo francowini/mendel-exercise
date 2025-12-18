@@ -1,0 +1,17 @@
+meta {
+  name: PUT Missing Amount
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{BASE_URL}}/transactions/100
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "type": "cars"
+  }
+}
